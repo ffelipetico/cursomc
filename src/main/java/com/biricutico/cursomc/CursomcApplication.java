@@ -9,10 +9,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.biricutico.cursomc.domain.Categoria;
 import com.biricutico.cursomc.domain.Cidade;
+import com.biricutico.cursomc.domain.Cliente;
+import com.biricutico.cursomc.domain.Endereco;
 import com.biricutico.cursomc.domain.Estado;
 import com.biricutico.cursomc.domain.Produto;
+import com.biricutico.cursomc.domain.enums.TipoCliente;
 import com.biricutico.cursomc.repositories.CategoriaRepository;
 import com.biricutico.cursomc.repositories.CidadeRepository;
+import com.biricutico.cursomc.repositories.ClienteRepository;
+import com.biricutico.cursomc.repositories.EnderecoRepository;
 import com.biricutico.cursomc.repositories.EstadoRepository;
 import com.biricutico.cursomc.repositories.ProdutoRepository;
 
@@ -27,6 +32,10 @@ public class CursomcApplication implements CommandLineRunner{
 	private EstadoRepository estadoRepository;
 	@Autowired
 	private CidadeRepository cidadeRepository;
+	@Autowired
+	private ClienteRepository clienteRepository;
+	@Autowired
+	private EnderecoRepository enderecoRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -72,7 +81,17 @@ public class CursomcApplication implements CommandLineRunner{
 		estadoRepository.saveAll(Arrays.asList(est1, est2));
 		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
 		
+		Cliente cli1 = new Cliente(null, "Maria Silva", "mariasilva@gmail.com", "36378912377", TipoCliente.PESSOAFISICA);
+		cli1.getTelefones().addAll(Arrays.asList("27789865", "95986636"));
 		
+		Endereco e1 = new Endereco(null, "Rua Flores Camelia", "300", "Apto 303", "Jardimn", "26532600", cli1, c1);
+		Endereco e2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "56260655" ,cli1, c2);
+		
+		//cliente tem que conhecer os enderecos dele
+		cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
+		
+		clienteRepository.saveAll(Arrays.asList(cli1));
+		enderecoRepository.saveAll(Arrays.asList(e1, e2));
 		
 	}
 }
